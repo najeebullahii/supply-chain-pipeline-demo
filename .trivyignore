@@ -1,0 +1,13 @@
+# CVE-2025-47273 (setuptools): Trivy reports installed version 70.3.0, but
+# the image actually has 84.0.0 — confirmed via `find / -iname '*setuptools*'`
+# (no other copy exists) and Trivy's own per-file breakdown, which separately
+# lists setuptools-84.0.0.dist-info with 0 vulnerabilities. Known category of
+# Trivy version-detection issue with setuptools. Reviewed 2026-09-14.
+CVE-2025-47273
+
+# GHSA-6v7p-g79w-8964 (msgpack): vendored inside pip itself
+# (pip/_vendor/msgpack), not a dependency this project chose. pip is a
+# build-time tool only — the running app never invokes it, so this isn't
+# part of the real runtime attack surface. No newer pip version exists yet
+# that resolves this upstream. Reviewed 2026-09-14.
+GHSA-6v7p-g79w-8964
