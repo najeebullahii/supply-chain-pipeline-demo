@@ -84,5 +84,24 @@ jobs:
             --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
             ${{ steps.push-image.outputs.digest }}
 
-      - name: Deploy (placeholder)
-        run: echo "Signature verified — real deployment happens in Stage 9"
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition supply-chain-pipeline-demo-task \
+            --query taskDefinition > task-definition.json
+
+      - name: Insert new image into task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: supply-chain-pipeline-demo
+          image: ${{ steps.push-image.outputs.digest }}
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: supply-chain-pipeline-demo-service
+          cluster: supply-chain-pipeline-demo-cluster
+          wait-for-service-stability: true
