@@ -83,3 +83,13 @@ jobs:
 
       - name: Sign the image with Cosign (keyless)
         run: cosign sign --yes ${{ steps.push-image.outputs.digest }}
+
+      - name: Verify image signature
+        run: |
+          cosign verify \
+            --certificate-identity="https://github.com/najeebullahii/supply-chain-pipeline-demo/.github/workflows/ci.yml@refs/heads/main" \
+            --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
+            ${{ steps.push-image.outputs.digest }}
+
+      - name: Deploy (placeholder)
+        run: echo "Signature verified — real deployment happens in Stage 9"
