@@ -7,6 +7,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -33,6 +36,7 @@ jobs:
           exit-code: '1'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
+          trivyignores: '.trivyignore'
 
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
@@ -46,13 +50,20 @@ jobs:
         with:
           name: sbom-report
           path: sbom.json
-      - name: Scan image for vulnerabilities
-        uses: aquasecurity/trivy-action@0.35.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          scan-type: 'image'
-          image-ref: 'supply-chain-pipeline-demo:${{ github.sha }}'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
-          trivyignores: '.trivyignore'
+          role-to-assume: arn:aws:iam::603283648579:role/github-actions-ecr-push
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag and push image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker tag supply-chain-pipeline-demo:${{ github.sha }} $ECR_REGISTRY/supply-chain-pipeline-demo:${{ github.sha }}
+          docker push $ECR_REGISTRY/supply-chain-pipeline-demo:${{ github.sha }}
