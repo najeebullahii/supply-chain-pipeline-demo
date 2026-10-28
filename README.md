@@ -4,7 +4,7 @@ A GitHub Actions pipeline that makes sure a container image is scanned, signed a
 
 Think of it like a sealed parcel. The pipeline checks what is inside, puts a tamper seal on it, and the delivery step refuses any parcel whose seal does not check out.
 
-This is a portfolio project in my own AWS account. It is not a production system. The full write-up, including what went wrong, is on Medium: [https://medium.com/@ishiyakunajib04/i-built-a-deployment-pipeline-that-refuses-to-run-tampered-code-and-proved-it-1e47803b1c1e](https://medium.com/@ishiyakunajib04/i-built-a-deployment-pipeline-that-refuses-to-run-tampered-code-and-proved-it-1e47803b1c1e)
+This is a portfolio project in my own AWS account. It is not a production system. The full write-up, including what went wrong, is on Medium: [ADD_MEDIUM_LINK](https://medium.com/@ishiyakunajib04/i-built-a-deployment-pipeline-that-refuses-to-run-tampered-code-and-proved-it-1e47803b1c1e)
 
 ## What happens on every push to main
 
